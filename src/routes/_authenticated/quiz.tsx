@@ -146,9 +146,9 @@ function QuizPage() {
         <Progress value={progress} className="h-2" />
       </div>
 
-      <Card className="rounded-2xl shadow-soft">
+      <Card key={current} className="rounded-2xl shadow-soft animate-in fade-in slide-in-from-right-4 duration-300">
         <CardContent className="p-6 space-y-5">
-          <h2 className="text-xl font-semibold leading-snug">{question.text}</h2>
+          <h2 className="text-xl sm:text-2xl font-semibold leading-snug">{question.text}</h2>
           <div className="space-y-3">
             {question.options.map((opt) => {
               const selected = selectedKey === opt.key;
@@ -158,11 +158,13 @@ function QuizPage() {
                   type="button"
                   onClick={() => selectOption(opt)}
                   disabled={isSaving}
-                  className={`w-full text-left rounded-xl border p-4 transition-all hover:border-primary hover:bg-primary/5 active:scale-[0.99] ${
-                    selected ? "border-primary bg-primary/10" : "border-border bg-card"
+                  className={`w-full text-left rounded-xl border-2 p-4 sm:p-5 transition-all duration-200 hover:border-primary hover:bg-primary/5 hover:shadow-soft active:scale-[0.99] disabled:opacity-60 disabled:cursor-not-allowed ${
+                    selected
+                      ? "border-primary bg-primary/10 shadow-soft"
+                      : "border-border bg-card"
                   }`}
                 >
-                  <span className="text-sm sm:text-base">{opt.text}</span>
+                  <span className="text-sm sm:text-base leading-relaxed">{opt.text}</span>
                 </button>
               );
             })}
