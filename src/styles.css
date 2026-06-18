@@ -103,3 +103,14 @@
     letter-spacing: -0.02em;
   }
 }
+
+@layer utilities {
+  .text-pop {
+    text-shadow:
+      0 2px 0 #0B2545,
+      0 -2px 0 #0B2545,
+      2px 0 0 #0B2545,
+      -2px 0 0 #0B2545,
+      0 4px 14px rgba(11, 37, 69, 0.45);
+  }
+}

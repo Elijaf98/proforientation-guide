@@ -71,9 +71,7 @@ function StartPage() {
         </span>
         <h1 className="font-display text-5xl sm:text-6xl leading-[0.95] text-[#0B2545]">
           Узнай своё<br />
-          <span className="text-[#FBF3E2] drop-shadow-[0_2px_0_#0B2545,0_4px_10px_rgba(11,37,69,0.55)]">
-            направление
-          </span>
+          <span className="text-[#FBF3E2] text-pop">направление</span>
         </h1>
       </div>
 
