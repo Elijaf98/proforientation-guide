@@ -72,7 +72,7 @@ function Squiggle({ className, stroke = "#0B2545" }: { className?: string; strok
 
 export function BackgroundDecor() {
   return (
-    <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden" aria-hidden>
+    <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden" aria-hidden>
       {/* warm gradient wash */}
       <div
         className="absolute inset-0"
