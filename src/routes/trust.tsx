@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/trust")({
+  ssr: false,
   head: () => ({
     meta: [
       { title: "Доверие и безопасность — Профориентация" },
