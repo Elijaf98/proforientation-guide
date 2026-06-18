@@ -192,6 +192,15 @@ export const conclusions: Record<Direction, Conclusion> = {
   },
 };
 
+export const DIRECTION_EMOJI: Record<Direction, string> = {
+  analyst: "📊",
+  nocode: "⚙️",
+  product: "🚀",
+  ops: "🗂️",
+  growth: "📈",
+  qa: "🔍",
+};
+
 export function emptyScores(): Scores {
   return { analyst: 0, nocode: 0, product: 0, ops: 0, growth: 0, qa: 0 };
 }
