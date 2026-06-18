@@ -94,6 +94,9 @@
     font-family: var(--font-sans);
     font-weight: 500;
   }
+  body {
+    background-color: transparent;
+  }
   h1, h2, h3, .font-display {
     font-family: var(--font-display);
     font-weight: 900;
