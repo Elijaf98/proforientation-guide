@@ -1,8 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Sparkles, ArrowRight, RotateCcw } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import {
   conclusions,
@@ -66,81 +63,76 @@ function StartPage() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="space-y-2">
-        <h1 className="text-3xl sm:text-4xl font-bold tracking-tight">
-          Узнайте своё направление
+    <div className="space-y-8">
+      <div className="space-y-3">
+        <span className="inline-block rounded-full bg-[#F5331F] text-white px-3 py-1 text-[10px] font-extrabold uppercase tracking-[0.15em]">
+          креативная академия
+        </span>
+        <h1 className="font-display text-5xl sm:text-6xl uppercase leading-[0.95]">
+          Узнай <span className="text-[#F5331F]">своё</span><br />направление
         </h1>
-        <p className="text-muted-foreground leading-relaxed">
-          Короткий тест из 5 вопросов поможет понять, какая профессиональная сфера подходит
-          вам больше всего.
+        <p className="text-base font-semibold text-[#111]/80 leading-relaxed max-w-md">
+          5 коротких вопросов — и ты поймёшь, в какой сфере ты на своём месте.
         </p>
       </div>
 
       {!loading && last && (
-        <Card className="rounded-2xl shadow-soft border-primary/30 bg-gradient-to-br from-primary/5 to-transparent overflow-hidden">
-          <CardContent className="p-6 space-y-4">
-            <div className="flex items-center gap-2 text-xs uppercase tracking-wider text-primary font-semibold">
-              <Sparkles className="h-3.5 w-3.5" />
-              Твой прошлый результат
-            </div>
-            <div className="flex items-center gap-3">
-              <span className="text-3xl" aria-hidden>
-                {DIRECTION_EMOJI[last.top_direction]}
-              </span>
-              <div className="min-w-0">
-                <div className="text-xs text-muted-foreground">Направление</div>
-                <div className="text-lg font-bold truncate">
-                  {conclusions[last.top_direction].title}
-                </div>
+        <div className="relative rounded-3xl border-2 border-[#111] bg-[#FFD400] p-6 shadow-[6px_6px_0_0_#111] space-y-4">
+          <div className="text-[10px] font-extrabold uppercase tracking-[0.2em]">
+            ★ Твой прошлый результат
+          </div>
+          <div className="flex items-center gap-3">
+            <span className="text-4xl" aria-hidden>
+              {DIRECTION_EMOJI[last.top_direction]}
+            </span>
+            <div className="min-w-0">
+              <div className="font-display text-2xl sm:text-3xl uppercase leading-tight">
+                {conclusions[last.top_direction].title}
               </div>
             </div>
-            <div className="flex flex-col sm:flex-row gap-2">
-              <Button onClick={viewLast} className="flex-1 h-11">
-                Посмотреть подробно
-                <ArrowRight className="h-4 w-4" />
-              </Button>
-              <Button asChild variant="outline" className="flex-1 h-11">
-                <Link to="/quiz">
-                  <RotateCcw className="h-4 w-4" />
-                  Пройти заново
-                </Link>
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+          </div>
+          <div className="flex flex-col sm:flex-row gap-2 pt-1">
+            <button
+              onClick={viewLast}
+              className="flex-1 rounded-full bg-[#111] text-white font-extrabold uppercase text-sm tracking-wide py-3 hover:bg-[#F5331F] transition"
+            >
+              Посмотреть подробно
+            </button>
+            <Link
+              to="/quiz"
+              className="flex-1 text-center rounded-full bg-white border-2 border-[#111] text-[#111] font-extrabold uppercase text-sm tracking-wide py-3 hover:bg-[#111] hover:text-white transition"
+            >
+              Пройти заново
+            </Link>
+          </div>
+        </div>
       )}
 
-      <Card className="rounded-2xl shadow-soft">
-        <CardContent className="p-6 space-y-4">
-          <h2 className="font-semibold">Как это работает</h2>
-          <ul className="space-y-3 text-sm">
-            <li className="flex gap-3">
-              <span className="grid place-items-center shrink-0 h-6 w-6 rounded-full bg-primary/10 text-primary text-xs font-bold">
-                1
+      <div className="rounded-3xl border-2 border-[#111] bg-white p-6 shadow-[6px_6px_0_0_#111]">
+        <h2 className="font-display text-xl uppercase mb-4">Как это работает</h2>
+        <ul className="space-y-3">
+          {[
+            "5 коротких вопросов о твоих привычках",
+            "Выбирай самый близкий вариант",
+            "Получи направление и первый шаг",
+          ].map((t, i) => (
+            <li key={i} className="flex gap-3 items-start">
+              <span className="grid place-items-center shrink-0 h-7 w-7 rounded-full bg-[#111] text-white text-xs font-black">
+                {i + 1}
               </span>
-              <span className="pt-0.5">5 коротких вопросов о ваших предпочтениях</span>
+              <span className="pt-0.5 text-sm font-semibold">{t}</span>
             </li>
-            <li className="flex gap-3">
-              <span className="grid place-items-center shrink-0 h-6 w-6 rounded-full bg-primary/10 text-primary text-xs font-bold">
-                2
-              </span>
-              <span className="pt-0.5">Выберите наиболее близкий вариант ответа</span>
-            </li>
-            <li className="flex gap-3">
-              <span className="grid place-items-center shrink-0 h-6 w-6 rounded-full bg-primary/10 text-primary text-xs font-bold">
-                3
-              </span>
-              <span className="pt-0.5">Получите направление и рекомендации</span>
-            </li>
-          </ul>
-        </CardContent>
-      </Card>
+          ))}
+        </ul>
+      </div>
 
       {!last && (
-        <Button asChild size="lg" className="w-full h-12 text-base">
-          <Link to="/quiz">Начать тест</Link>
-        </Button>
+        <Link
+          to="/quiz"
+          className="block text-center rounded-full bg-[#111] text-white font-extrabold uppercase tracking-wider py-4 text-base hover:bg-[#F5331F] transition shadow-[6px_6px_0_0_#F5331F]"
+        >
+          Начать тест →
+        </Link>
       )}
     </div>
   );
