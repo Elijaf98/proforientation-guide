@@ -45,6 +45,7 @@ function QuizPage() {
       .single();
 
     if (resultError) throw resultError;
+    if (!result) throw new Error("Supabase не вернул идентификатор результата");
 
     const answerRows = questions.map((item, index) => {
       const answerKey = nextAnswers[index];
