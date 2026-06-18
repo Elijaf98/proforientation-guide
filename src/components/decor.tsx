@@ -216,7 +216,7 @@ export function BackgroundDecor() {
       <DotGrid className="absolute bottom-4 left-4 w-28 sm:w-36 opacity-60" />
       <DotGrid className="absolute top-4 right-4 w-24 sm:w-32 opacity-50" />
       <DotGrid className="absolute top-1/3 left-2 w-20 sm:w-28 opacity-40" />
-
+    </div>
   );
 }
 
