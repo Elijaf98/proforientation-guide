@@ -1,7 +1,6 @@
 import { createFileRoute, Outlet, redirect, Link, useNavigate } from "@tanstack/react-router";
-import { Compass } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { Button } from "@/components/ui/button";
+import { BackgroundDecor, Star } from "@/components/decor";
 
 export const Route = createFileRoute("/_authenticated")({
   ssr: false,
@@ -22,22 +21,25 @@ function AuthenticatedLayout() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-primary/5 via-background to-background">
-      <header className="sticky top-0 z-10 border-b border-border/60 bg-background/80 backdrop-blur-md">
-        <div className="h-0.5 w-full bg-gradient-to-r from-transparent via-primary to-transparent opacity-70" />
-        <div className="max-w-xl mx-auto px-4 h-16 flex items-center justify-between">
+    <div className="relative min-h-screen bg-white text-[#111]">
+      <BackgroundDecor />
+      <header className="sticky top-0 z-20 bg-white border-b-2 border-[#111]">
+        <div className="max-w-2xl mx-auto px-4 h-16 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2.5 group">
-            <span className="grid place-items-center h-9 w-9 rounded-full bg-primary text-primary-foreground shadow-soft transition-transform group-hover:scale-105">
-              <Compass className="h-5 w-5" strokeWidth={2.5} />
+            <Star className="h-9 w-9 transition-transform group-hover:rotate-12" fill="#F5331F" />
+            <span className="font-display text-lg sm:text-xl uppercase tracking-tight">
+              Профориентация
             </span>
-            <span className="font-bold tracking-tight text-base">Профориентация</span>
           </Link>
-          <Button variant="ghost" size="sm" onClick={handleSignOut}>
+          <button
+            onClick={handleSignOut}
+            className="rounded-full border-2 border-[#111] px-4 py-1.5 text-sm font-extrabold uppercase tracking-wide bg-white hover:bg-[#FFD400] transition"
+          >
             Выйти
-          </Button>
+          </button>
         </div>
       </header>
-      <main className="max-w-xl mx-auto px-4 py-8">
+      <main className="relative max-w-2xl mx-auto px-4 py-8 sm:py-12">
         <Outlet />
       </main>
     </div>

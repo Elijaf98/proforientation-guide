@@ -1,12 +1,8 @@
 import { createFileRoute, useNavigate, redirect } from "@tanstack/react-router";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
+import { BackgroundDecor, Star } from "@/components/decor";
 
 export const Route = createFileRoute("/auth")({
   ssr: false,
@@ -24,35 +20,41 @@ export const Route = createFileRoute("/auth")({
 });
 
 function AuthPage() {
+  const [mode, setMode] = useState<"signin" | "signup">("signin");
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-12 bg-background">
-      <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold tracking-tight">Профориентация</h1>
-          <p className="text-muted-foreground mt-2 text-sm">
-            Мини-тест, который подскажет подходящее направление
+    <div className="relative min-h-screen flex items-center justify-center px-4 py-12 bg-white text-[#111]">
+      <BackgroundDecor />
+      <div className="relative w-full max-w-md">
+        <div className="text-center mb-6 flex flex-col items-center gap-3">
+          <Star className="h-14 w-14" fill="#F5331F" />
+          <h1 className="font-display text-4xl sm:text-5xl uppercase leading-none">
+            Профориентация
+          </h1>
+          <p className="text-sm font-semibold text-[#111]/70">
+            Мини-тест, который подскажет твоё направление
           </p>
         </div>
-        <Card className="shadow-soft rounded-2xl">
-          <CardHeader>
-            <CardTitle>Добро пожаловать</CardTitle>
-            <CardDescription>Войдите или создайте аккаунт, чтобы продолжить</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Tabs defaultValue="signin" className="w-full">
-              <TabsList className="grid grid-cols-2 w-full">
-                <TabsTrigger value="signin">Вход</TabsTrigger>
-                <TabsTrigger value="signup">Регистрация</TabsTrigger>
-              </TabsList>
-              <TabsContent value="signin" className="mt-4">
-                <AuthForm mode="signin" />
-              </TabsContent>
-              <TabsContent value="signup" className="mt-4">
-                <AuthForm mode="signup" />
-              </TabsContent>
-            </Tabs>
-          </CardContent>
-        </Card>
+        <div className="rounded-3xl border-2 border-[#111] bg-white p-6 sm:p-8 shadow-[6px_6px_0_0_#111]">
+          <div className="grid grid-cols-2 gap-2 mb-6">
+            <button
+              onClick={() => setMode("signin")}
+              className={`rounded-full py-2 text-sm font-extrabold uppercase border-2 border-[#111] transition ${
+                mode === "signin" ? "bg-[#111] text-white" : "bg-white text-[#111]"
+              }`}
+            >
+              Вход
+            </button>
+            <button
+              onClick={() => setMode("signup")}
+              className={`rounded-full py-2 text-sm font-extrabold uppercase border-2 border-[#111] transition ${
+                mode === "signup" ? "bg-[#111] text-white" : "bg-white text-[#111]"
+              }`}
+            >
+              Регистрация
+            </button>
+          </div>
+          <AuthForm mode={mode} />
+        </div>
       </div>
     </div>
   );
@@ -91,9 +93,11 @@ function AuthForm({ mode }: { mode: "signin" | "signup" }) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="space-y-2">
-        <Label htmlFor={`email-${mode}`}>Email</Label>
-        <Input
+      <div className="space-y-1.5">
+        <label htmlFor={`email-${mode}`} className="text-xs font-extrabold uppercase tracking-wider">
+          Email
+        </label>
+        <input
           id={`email-${mode}`}
           type="email"
           required
@@ -101,11 +105,14 @@ function AuthForm({ mode }: { mode: "signin" | "signup" }) {
           onChange={(e) => setEmail(e.target.value)}
           placeholder="you@example.com"
           autoComplete="email"
+          className="w-full rounded-full border-2 border-[#111] bg-white px-5 py-3 font-semibold placeholder:text-[#111]/40 focus:outline-none focus:bg-[#FFD400]/30"
         />
       </div>
-      <div className="space-y-2">
-        <Label htmlFor={`password-${mode}`}>Пароль</Label>
-        <Input
+      <div className="space-y-1.5">
+        <label htmlFor={`password-${mode}`} className="text-xs font-extrabold uppercase tracking-wider">
+          Пароль
+        </label>
+        <input
           id={`password-${mode}`}
           type="password"
           required
@@ -114,11 +121,16 @@ function AuthForm({ mode }: { mode: "signin" | "signup" }) {
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Минимум 6 символов"
           autoComplete={mode === "signup" ? "new-password" : "current-password"}
+          className="w-full rounded-full border-2 border-[#111] bg-white px-5 py-3 font-semibold placeholder:text-[#111]/40 focus:outline-none focus:bg-[#FFD400]/30"
         />
       </div>
-      <Button type="submit" className="w-full h-11 text-base" disabled={loading}>
+      <button
+        type="submit"
+        disabled={loading}
+        className="w-full rounded-full bg-[#111] text-white font-extrabold uppercase tracking-wide py-3.5 hover:bg-[#F5331F] transition disabled:opacity-60"
+      >
         {loading ? "Подождите..." : mode === "signup" ? "Создать аккаунт" : "Войти"}
-      </Button>
+      </button>
     </form>
   );
 }

@@ -1,8 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Sparkles } from "lucide-react";
 import {
   conclusions,
   DIRECTION_EMOJI,
@@ -19,6 +16,8 @@ export const Route = createFileRoute("/_authenticated/result")({
 });
 
 type StoredResult = { direction: Direction; scores: Scores };
+
+const BAR_COLORS = ["#F5331F", "#FFD400", "#1E7D3C", "#2D6BE0", "#111111", "#F5331F"];
 
 function ResultPage() {
   const navigate = useNavigate();
@@ -46,88 +45,90 @@ function ResultPage() {
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
-      <div className="space-y-3">
-        <span className="inline-flex items-center gap-1.5 rounded-full bg-primary px-3 py-1 text-xs font-semibold uppercase tracking-wider text-primary-foreground shadow-soft">
-          <Sparkles className="h-3.5 w-3.5" />
-          Ваше направление
+      <div className="space-y-4">
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-[#F5331F] text-white px-3 py-1 text-[10px] font-extrabold uppercase tracking-[0.2em]">
+          ★ Ваше направление
         </span>
-        <div className="flex items-start gap-3">
-          <span className="text-4xl sm:text-5xl leading-none" aria-hidden>
-            {DIRECTION_EMOJI[stored.direction]}
-          </span>
-          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight">{c.title}</h1>
+        <div className="rounded-3xl border-2 border-[#111] bg-[#FFD400] p-6 sm:p-8 shadow-[6px_6px_0_0_#111]">
+          <div className="flex items-start gap-3">
+            <span className="text-5xl sm:text-6xl leading-none" aria-hidden>
+              {DIRECTION_EMOJI[stored.direction]}
+            </span>
+            <h1 className="font-display text-4xl sm:text-6xl uppercase leading-[0.9]">
+              {c.title}
+            </h1>
+          </div>
         </div>
       </div>
 
-      <Card className="rounded-2xl shadow-soft">
-        <CardContent className="p-6">
-          <p className="text-foreground/85 leading-relaxed">{c.description}</p>
-        </CardContent>
-      </Card>
+      <div className="rounded-3xl border-2 border-[#111] bg-white p-6 shadow-[6px_6px_0_0_#111]">
+        <p className="text-[15px] font-semibold leading-relaxed">{c.description}</p>
+      </div>
 
-      <Card className="rounded-2xl shadow-soft">
-        <CardContent className="p-6 space-y-5">
-          <div>
-            <h2 className="font-semibold mb-1.5">Что подтянуть</h2>
-            <p className="text-sm text-foreground/80 leading-relaxed">{c.toLearn}</p>
+      <div className="grid sm:grid-cols-2 gap-4">
+        <div className="rounded-3xl border-2 border-[#111] bg-[#2D6BE0] text-white p-5 shadow-[6px_6px_0_0_#111]">
+          <div className="text-[10px] font-extrabold uppercase tracking-[0.2em] mb-2">
+            Что подтянуть
           </div>
-          <div className="h-px bg-border" />
-          <div>
-            <h2 className="font-semibold mb-1.5">Первый шаг</h2>
-            <p className="text-sm text-foreground/80 leading-relaxed">{c.firstStep}</p>
+          <p className="text-sm font-semibold leading-relaxed">{c.toLearn}</p>
+        </div>
+        <div className="rounded-3xl border-2 border-[#111] bg-[#1E7D3C] text-white p-5 shadow-[6px_6px_0_0_#111]">
+          <div className="text-[10px] font-extrabold uppercase tracking-[0.2em] mb-2">
+            Первый шаг
           </div>
-        </CardContent>
-      </Card>
+          <p className="text-sm font-semibold leading-relaxed">{c.firstStep}</p>
+        </div>
+      </div>
 
-      <Card className="rounded-2xl shadow-soft">
-        <CardContent className="p-6 space-y-4">
-          <h2 className="font-semibold">Баллы по направлениям</h2>
-          <ul className="space-y-3">
-            {sorted.map((d) => {
-              const v = stored.scores[d];
-              const pct = (v / max) * 100;
-              const isWinner = d === stored.direction;
-              return (
-                <li key={d} className="space-y-1.5">
-                  <div className="flex items-center justify-between text-sm">
-                    <span
-                      className={`flex items-center gap-2 ${
-                        isWinner ? "font-semibold text-foreground" : "text-foreground/75"
-                      }`}
-                    >
-                      <span aria-hidden>{DIRECTION_EMOJI[d]}</span>
-                      <span>{conclusions[d].title}</span>
-                    </span>
-                    <span
-                      className={`tabular-nums text-xs ${
-                        isWinner ? "font-bold text-primary" : "text-muted-foreground"
-                      }`}
-                    >
-                      {v}
-                    </span>
-                  </div>
-                  <div className="h-2 w-full rounded-full bg-muted overflow-hidden">
-                    <div
-                      className={`h-full rounded-full transition-all duration-700 ${
-                        isWinner ? "bg-primary" : "bg-primary/25"
-                      }`}
-                      style={{ width: `${pct}%` }}
-                    />
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
-        </CardContent>
-      </Card>
+      <div className="rounded-3xl border-2 border-[#111] bg-white p-6 shadow-[6px_6px_0_0_#111] space-y-4">
+        <h2 className="font-display text-xl uppercase">Баллы по направлениям</h2>
+        <ul className="space-y-3">
+          {sorted.map((d, i) => {
+            const v = stored.scores[d];
+            const pct = (v / max) * 100;
+            const isWinner = d === stored.direction;
+            const color = isWinner ? "#F5331F" : BAR_COLORS[(i + 1) % BAR_COLORS.length];
+            return (
+              <li key={d} className="space-y-1.5">
+                <div className="flex items-center justify-between text-sm">
+                  <span className={`flex items-center gap-2 font-bold ${isWinner ? "" : "text-[#111]/75"}`}>
+                    <span aria-hidden>{DIRECTION_EMOJI[d]}</span>
+                    <span>{conclusions[d].title}</span>
+                    {isWinner && (
+                      <span className="rounded-full bg-[#111] text-white px-2 py-0.5 text-[9px] font-extrabold uppercase tracking-wider">
+                        Топ
+                      </span>
+                    )}
+                  </span>
+                  <span className={`tabular-nums font-black ${isWinner ? "text-[#F5331F]" : "text-[#111]/60"}`}>
+                    {v}
+                  </span>
+                </div>
+                <div className="h-3 w-full rounded-full border-2 border-[#111] bg-white overflow-hidden">
+                  <div
+                    className="h-full transition-all duration-700"
+                    style={{ width: `${pct}%`, background: color }}
+                  />
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
 
       <div className="flex flex-col sm:flex-row gap-3">
-        <Button asChild size="lg" className="flex-1 h-12">
-          <Link to="/quiz">Пройти ещё раз</Link>
-        </Button>
-        <Button asChild variant="outline" size="lg" className="flex-1 h-12">
-          <Link to="/">На главную</Link>
-        </Button>
+        <Link
+          to="/quiz"
+          className="flex-1 text-center rounded-full bg-[#111] text-white font-extrabold uppercase tracking-wide py-4 hover:bg-[#F5331F] transition"
+        >
+          Пройти ещё раз
+        </Link>
+        <Link
+          to="/"
+          className="flex-1 text-center rounded-full border-2 border-[#111] bg-white text-[#111] font-extrabold uppercase tracking-wide py-4 hover:bg-[#FFD400] transition"
+        >
+          На главную
+        </Link>
       </div>
     </div>
   );

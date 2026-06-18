@@ -1,8 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
 import {
   conclusions,
   emptyScores,
@@ -137,47 +134,59 @@ function QuizPage() {
   return (
     <div className="space-y-6">
       <div className="space-y-2">
-        <div className="flex items-center justify-between text-sm text-muted-foreground">
-          <span>
+        <div className="flex items-center justify-between">
+          <span className="text-xs font-extrabold uppercase tracking-[0.2em]">
             Вопрос {current + 1} из {TOTAL_QUESTIONS}
           </span>
-          <span>{Math.round(progress)}%</span>
+          <span className="text-xs font-extrabold tabular-nums">{Math.round(progress)}%</span>
         </div>
-        <Progress value={progress} className="h-2" />
+        <div className="h-3 w-full rounded-full border-2 border-[#111] bg-white overflow-hidden">
+          <div
+            className="h-full bg-[#F5331F] transition-all duration-500"
+            style={{ width: `${progress}%` }}
+          />
+        </div>
       </div>
 
-      <Card key={current} className="rounded-2xl shadow-soft animate-in fade-in slide-in-from-right-4 duration-300">
-        <CardContent className="p-6 space-y-5">
-          <h2 className="text-xl sm:text-2xl font-semibold leading-snug">{question.text}</h2>
-          <div className="space-y-3">
-            {question.options.map((opt) => {
-              const selected = selectedKey === opt.key;
-              return (
-                <button
-                  key={opt.key}
-                  type="button"
-                  onClick={() => selectOption(opt)}
-                  disabled={isSaving}
-                  className={`w-full text-left rounded-xl border-2 p-4 sm:p-5 transition-all duration-200 hover:border-primary hover:bg-primary/5 hover:shadow-soft active:scale-[0.99] disabled:opacity-60 disabled:cursor-not-allowed ${
-                    selected
-                      ? "border-primary bg-primary/10 shadow-soft"
-                      : "border-border bg-card"
-                  }`}
-                >
-                  <span className="text-sm sm:text-base leading-relaxed">{opt.text}</span>
-                </button>
-              );
-            })}
-          </div>
-        </CardContent>
-      </Card>
+      <div
+        key={current}
+        className="rounded-3xl border-2 border-[#111] bg-white p-6 sm:p-8 shadow-[6px_6px_0_0_#111] animate-in fade-in slide-in-from-right-4 duration-300 space-y-6"
+      >
+        <h2 className="font-display text-2xl sm:text-3xl uppercase leading-[1.05]">
+          {question.text}
+        </h2>
+        <div className="space-y-3">
+          {question.options.map((opt) => {
+            const selected = selectedKey === opt.key;
+            return (
+              <button
+                key={opt.key}
+                type="button"
+                onClick={() => selectOption(opt)}
+                disabled={isSaving}
+                className={`w-full text-left rounded-full border-2 border-[#111] px-5 py-4 sm:py-4 font-bold text-sm sm:text-base transition-all active:scale-[0.99] disabled:opacity-60 disabled:cursor-not-allowed ${
+                  selected
+                    ? "bg-[#F5331F] text-white"
+                    : "bg-[#111] text-white hover:bg-[#FFD400] hover:text-[#111]"
+                }`}
+              >
+                {opt.text}
+              </button>
+            );
+          })}
+        </div>
+      </div>
 
-      <div className="flex justify-between">
-        <Button variant="ghost" onClick={goBack} disabled={current === 0 || isSaving}>
-          Назад
-        </Button>
-        <span className="text-xs text-muted-foreground self-center">
-          {isSaving ? "Сохраняем результат..." : "Выберите вариант, чтобы продолжить"}
+      <div className="flex items-center justify-between">
+        <button
+          onClick={goBack}
+          disabled={current === 0 || isSaving}
+          className="rounded-full border-2 border-[#111] bg-white px-5 py-2 text-sm font-extrabold uppercase disabled:opacity-40 hover:bg-[#111] hover:text-white transition"
+        >
+          ← Назад
+        </button>
+        <span className="text-xs font-bold text-[#111]/60">
+          {isSaving ? "Сохраняем..." : "Выбери вариант"}
         </span>
       </div>
     </div>
