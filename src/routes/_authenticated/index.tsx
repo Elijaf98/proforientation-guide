@@ -64,43 +64,52 @@ function StartPage() {
 
   return (
     <div className="space-y-8">
-      <div className="space-y-3">
-        <span className="inline-block rounded-full bg-[#F5331F] text-white px-3 py-1 text-[10px] font-extrabold uppercase tracking-[0.15em]">
-          креативная академия
+      <div className="space-y-4">
+        <span className="relative inline-block rounded-full bg-[#FCD116] text-[#0B2545] px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] border border-[#0B2545] shadow-[0_4px_0_0_#0B2545]">
+          Онлайн-академия
+          <span className="absolute -bottom-2 left-6 w-3 h-3 bg-[#FCD116] border-r border-b border-[#0B2545] rotate-45" />
         </span>
-        <h1 className="font-display text-5xl sm:text-6xl uppercase leading-[0.95]">
-          Узнай <span className="text-[#F5331F]">своё</span><br />направление
+        <h1 className="font-display text-5xl sm:text-6xl leading-[0.95] text-[#0B2545]">
+          Узнай своё<br />
+          <span className="text-[#FBF3E2]">направление</span>
         </h1>
-        <p className="text-base font-semibold text-[#111]/80 leading-relaxed max-w-md">
+      </div>
+
+      <div className="rounded-[2rem] border border-[#0B2545] bg-[#FBF3E2] p-6 shadow-[0_18px_40px_-16px_rgba(11,37,69,0.45),0_6px_0_0_#0B2545]">
+        <p className="text-base font-semibold text-[#0B2545] leading-relaxed">
           5 коротких вопросов — и ты поймёшь, в какой сфере ты на своём месте.
+          Без занудства, по-доброму и по делу.
         </p>
       </div>
 
       {!loading && last && (
-        <div className="relative rounded-3xl border-2 border-[#111] bg-[#FFD400] p-6 shadow-[6px_6px_0_0_#111] space-y-4">
-          <div className="text-[10px] font-extrabold uppercase tracking-[0.2em]">
-            ★ Твой прошлый результат
+        <div className="relative rounded-[2rem] border border-[#0B2545] bg-[#FCD116] p-6 shadow-[0_20px_40px_-12px_rgba(11,37,69,0.5),0_8px_0_0_#0B2545] space-y-4">
+          <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#0B2545]/80">
+            ✨ Твой прошлый результат
           </div>
-          <div className="flex items-center gap-3">
-            <span className="text-4xl" aria-hidden>
+          <div className="flex items-center gap-4">
+            <span
+              className="grid place-items-center h-16 w-16 rounded-2xl bg-[#FBF3E2] border border-[#0B2545] shadow-[0_6px_0_0_#0B2545] text-3xl"
+              aria-hidden
+            >
               {DIRECTION_EMOJI[last.top_direction]}
             </span>
             <div className="min-w-0">
-              <div className="font-display text-2xl sm:text-3xl uppercase leading-tight">
+              <div className="font-display text-2xl sm:text-3xl leading-tight text-[#0B2545]">
                 {conclusions[last.top_direction].title}
               </div>
             </div>
           </div>
-          <div className="flex flex-col sm:flex-row gap-2 pt-1">
+          <div className="flex flex-col sm:flex-row gap-3 pt-1">
             <button
               onClick={viewLast}
-              className="flex-1 rounded-full bg-[#111] text-white font-extrabold uppercase text-sm tracking-wide py-3 hover:bg-[#F5331F] transition"
+              className="flex-1 rounded-full bg-[#0B2545] text-[#FBF3E2] font-bold text-sm py-3.5 shadow-[0_6px_0_0_rgba(0,0,0,0.25)] hover:-translate-y-0.5 active:translate-y-0 transition"
             >
               Посмотреть подробно
             </button>
             <Link
               to="/quiz"
-              className="flex-1 text-center rounded-full bg-white border-2 border-[#111] text-[#111] font-extrabold uppercase text-sm tracking-wide py-3 hover:bg-[#111] hover:text-white transition"
+              className="flex-1 text-center rounded-full bg-[#FBF3E2] border border-[#0B2545] text-[#0B2545] font-bold text-sm py-3.5 shadow-[0_6px_0_0_#0B2545] hover:-translate-y-0.5 active:translate-y-0 transition"
             >
               Пройти заново
             </Link>
@@ -108,19 +117,22 @@ function StartPage() {
         </div>
       )}
 
-      <div className="rounded-3xl border-2 border-[#111] bg-white p-6 shadow-[6px_6px_0_0_#111]">
-        <h2 className="font-display text-xl uppercase mb-4">Как это работает</h2>
+      <div className="rounded-[2rem] border border-[#0B2545] bg-[#FBF3E2] p-6 shadow-[0_14px_30px_-12px_rgba(11,37,69,0.4),0_6px_0_0_#0B2545]">
+        <h2 className="font-display text-xl text-[#0B2545] mb-4">Как это работает</h2>
         <ul className="space-y-3">
           {[
-            "5 коротких вопросов о твоих привычках",
-            "Выбирай самый близкий вариант",
-            "Получи направление и первый шаг",
-          ].map((t, i) => (
+            { t: "5 коротких вопросов о твоих привычках", c: "#2C6FE3" },
+            { t: "Выбирай самый близкий вариант", c: "#1FA36A" },
+            { t: "Получи направление и первый шаг", c: "#F26B4E" },
+          ].map((item, i) => (
             <li key={i} className="flex gap-3 items-start">
-              <span className="grid place-items-center shrink-0 h-7 w-7 rounded-full bg-[#111] text-white text-xs font-black">
+              <span
+                className="grid place-items-center shrink-0 h-9 w-9 rounded-full text-[#FBF3E2] text-sm font-black border border-[#0B2545] shadow-[0_4px_0_0_#0B2545]"
+                style={{ background: item.c }}
+              >
                 {i + 1}
               </span>
-              <span className="pt-0.5 text-sm font-semibold">{t}</span>
+              <span className="pt-1.5 text-sm font-semibold text-[#0B2545]">{item.t}</span>
             </li>
           ))}
         </ul>
@@ -129,7 +141,7 @@ function StartPage() {
       {!last && (
         <Link
           to="/quiz"
-          className="block text-center rounded-full bg-[#111] text-white font-extrabold uppercase tracking-wider py-4 text-base hover:bg-[#F5331F] transition shadow-[6px_6px_0_0_#F5331F]"
+          className="block text-center rounded-full bg-[#0B2545] text-[#FBF3E2] font-bold tracking-wide py-5 text-base shadow-[0_10px_0_0_rgba(0,0,0,0.25),0_24px_36px_-12px_rgba(11,37,69,0.5)] hover:-translate-y-0.5 active:translate-y-0 transition"
         >
           Начать тест →
         </Link>

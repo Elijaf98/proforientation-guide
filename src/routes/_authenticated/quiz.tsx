@@ -134,25 +134,28 @@ function QuizPage() {
   return (
     <div className="space-y-6">
       <div className="space-y-2">
-        <div className="flex items-center justify-between">
-          <span className="text-xs font-extrabold uppercase tracking-[0.2em]">
+        <div className="flex items-center justify-between text-[#0B2545]">
+          <span className="text-xs font-bold uppercase tracking-[0.18em]">
             Вопрос {current + 1} из {TOTAL_QUESTIONS}
           </span>
           <span className="text-xs font-extrabold tabular-nums">{Math.round(progress)}%</span>
         </div>
-        <div className="h-3 w-full rounded-full border-2 border-[#111] bg-white overflow-hidden">
+        <div className="h-4 w-full rounded-full border border-[#0B2545] bg-[#FBF3E2] overflow-hidden shadow-[inset_0_2px_0_0_rgba(11,37,69,0.15)]">
           <div
-            className="h-full bg-[#F5331F] transition-all duration-500"
-            style={{ width: `${progress}%` }}
+            className="h-full rounded-full transition-all duration-500"
+            style={{
+              width: `${progress}%`,
+              background: "linear-gradient(90deg, #FCD116, #F26B4E)",
+            }}
           />
         </div>
       </div>
 
       <div
         key={current}
-        className="rounded-3xl border-2 border-[#111] bg-white p-6 sm:p-8 shadow-[6px_6px_0_0_#111] animate-in fade-in slide-in-from-right-4 duration-300 space-y-6"
+        className="rounded-[2rem] border border-[#0B2545] bg-[#FBF3E2] p-6 sm:p-8 shadow-[0_22px_44px_-18px_rgba(11,37,69,0.5),0_8px_0_0_#0B2545] animate-in fade-in slide-in-from-right-4 duration-300 space-y-6"
       >
-        <h2 className="font-display text-2xl sm:text-3xl uppercase leading-[1.05]">
+        <h2 className="font-display text-2xl sm:text-3xl leading-[1.1] text-[#0B2545]">
           {question.text}
         </h2>
         <div className="space-y-3">
@@ -164,10 +167,10 @@ function QuizPage() {
                 type="button"
                 onClick={() => selectOption(opt)}
                 disabled={isSaving}
-                className={`w-full text-left rounded-full border-2 border-[#111] px-5 py-4 sm:py-4 font-bold text-sm sm:text-base transition-all active:scale-[0.99] disabled:opacity-60 disabled:cursor-not-allowed ${
+                className={`w-full text-left rounded-2xl border px-5 py-4 font-semibold text-sm sm:text-base transition-all disabled:opacity-60 disabled:cursor-not-allowed hover:-translate-y-0.5 active:translate-y-0 ${
                   selected
-                    ? "bg-[#F5331F] text-white"
-                    : "bg-[#111] text-white hover:bg-[#FFD400] hover:text-[#111]"
+                    ? "bg-[#0B2545] text-[#FBF3E2] border-[#0B2545] shadow-[0_8px_0_0_#FCD116]"
+                    : "bg-white text-[#0B2545] border-[#0B2545] shadow-[0_5px_0_0_#0B2545] hover:bg-[#FCD116]/30"
                 }`}
               >
                 {opt.text}
@@ -181,11 +184,11 @@ function QuizPage() {
         <button
           onClick={goBack}
           disabled={current === 0 || isSaving}
-          className="rounded-full border-2 border-[#111] bg-white px-5 py-2 text-sm font-extrabold uppercase disabled:opacity-40 hover:bg-[#111] hover:text-white transition"
+          className="rounded-full border border-[#0B2545] bg-[#FBF3E2] px-5 py-2.5 text-sm font-bold text-[#0B2545] shadow-[0_4px_0_0_#0B2545] disabled:opacity-40 hover:-translate-y-0.5 active:translate-y-0 transition"
         >
           ← Назад
         </button>
-        <span className="text-xs font-bold text-[#111]/60">
+        <span className="text-xs font-bold text-[#0B2545]/70">
           {isSaving ? "Сохраняем..." : "Выбери вариант"}
         </span>
       </div>
