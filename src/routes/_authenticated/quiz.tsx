@@ -1,9 +1,23 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { placeholderResult, questions } from "@/lib/quiz-data";
+import {
+  conclusions,
+  emptyScores,
+  pickWinner,
+  q1,
+  q2ByTrack,
+  q3,
+  q4,
+  q5,
+  TOTAL_QUESTIONS,
+  type Direction,
+  type QuizOption,
+  type QuizQuestion,
+  type Scores,
+} from "@/lib/quiz-data";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -14,72 +28,100 @@ export const Route = createFileRoute("/_authenticated/quiz")({
   component: QuizPage,
 });
 
+type AnswerRecord = {
+  question_key: string;
+  question_text: string;
+  answer_key: string;
+  answer_text: string;
+  scores: Partial<Scores>;
+};
+
 function QuizPage() {
   const navigate = useNavigate();
   const [current, setCurrent] = useState(0);
-  const [answers, setAnswers] = useState<string[]>([]);
+  const [answers, setAnswers] = useState<AnswerRecord[]>([]);
   const [isSaving, setIsSaving] = useState(false);
 
-  const total = questions.length;
-  const question = questions[current];
-  const progress = ((current + 1) / total) * 100;
+  const questionsForFlow = useMemo<QuizQuestion[]>(() => {
+    const q1Answer = answers[0];
+    const track = q1Answer
+      ? q1.options.find((o) => o.key === q1Answer.answer_key)?.track
+      : undefined;
+    const q2 = track ? q2ByTrack[track] : q2ByTrack.DATA;
+    return [q1, q2, q3, q4, q5];
+  }, [answers]);
 
-  async function saveQuizAttempt(nextAnswers: string[]) {
+  const question = questionsForFlow[current];
+  const progress = ((current + 1) / TOTAL_QUESTIONS) * 100;
+
+  async function saveQuizAttempt(finalAnswers: AnswerRecord[]) {
     const { data: userData, error: userError } = await supabase.auth.getUser();
     const user = userData.user;
+    if (userError || !user) throw new Error("Не удалось определить пользователя");
 
-    if (userError || !user) {
-      throw new Error("Не удалось определить пользователя для сохранения результата");
+    const scores = emptyScores();
+    for (const a of finalAnswers) {
+      for (const [dir, val] of Object.entries(a.scores)) {
+        scores[dir as Direction] += val ?? 0;
+      }
     }
+    const winner = pickWinner(scores);
+    const c = conclusions[winner];
+    const conclusionText = `${c.description} Что подтянуть: ${c.toLearn} Первый шаг: ${c.firstStep}`;
 
     const { data: result, error: resultError } = await supabase
       .from("quiz_results")
       .insert({
         user_id: user.id,
-        top_direction: "analytics",
-        top_title: placeholderResult.direction,
-        conclusion: placeholderResult.explanation,
-        scores: { placeholder: true, answers: nextAnswers },
+        top_direction: winner,
+        top_title: c.title,
+        conclusion: conclusionText,
+        scores,
       })
       .select("id")
       .single();
 
     if (resultError) throw resultError;
-    if (!result) throw new Error("Supabase не вернул идентификатор результата");
+    if (!result) throw new Error("Supabase не вернул id");
 
-    const answerRows = questions.map((item, index) => {
-      const answerKey = nextAnswers[index];
-      const answer = item.options.find((option) => option.key === answerKey);
+    const rows = finalAnswers.map((a) => ({
+      result_id: result.id,
+      user_id: user.id,
+      question_key: a.question_key,
+      question_text: a.question_text,
+      answer_text: a.answer_text,
+    }));
+    const { error: ansErr } = await supabase.from("quiz_answers").insert(rows);
+    if (ansErr) throw ansErr;
 
-      return {
-        result_id: result.id,
-        user_id: user.id,
-        question_key: item.key,
-        question_text: item.text,
-        answer_text: answer?.text ?? answerKey,
-      };
-    });
-
-    const { error: answersError } = await supabase.from("quiz_answers").insert(answerRows);
-    if (answersError) throw answersError;
+    sessionStorage.setItem(
+      "quiz-result",
+      JSON.stringify({ direction: winner, scores }),
+    );
   }
 
-  async function selectOption(optionKey: string) {
+  async function selectOption(opt: QuizOption) {
     if (isSaving) return;
+    const record: AnswerRecord = {
+      question_key: question.key,
+      question_text: question.text,
+      answer_key: opt.key,
+      answer_text: opt.text,
+      scores: opt.scores,
+    };
+    const next = [...answers.slice(0, current), record];
 
-    const next = [...answers];
-    next[current] = optionKey;
-    setAnswers(next);
-
-    if (current < total - 1) {
+    if (current < TOTAL_QUESTIONS - 1) {
+      setAnswers(next);
       setCurrent(current + 1);
     } else {
+      setAnswers(next);
       try {
         setIsSaving(true);
-        sessionStorage.setItem("quiz-answers", JSON.stringify(next));
         await saveQuizAttempt(next);
         navigate({ to: "/result" });
-      } catch {
+      } catch (e) {
+        console.error(e);
         toast.error("Не удалось сохранить результат. Попробуйте ещё раз.");
         setIsSaving(false);
       }
@@ -90,12 +132,14 @@ function QuizPage() {
     if (current > 0) setCurrent(current - 1);
   }
 
+  const selectedKey = answers[current]?.answer_key;
+
   return (
     <div className="space-y-6">
       <div className="space-y-2">
         <div className="flex items-center justify-between text-sm text-muted-foreground">
           <span>
-            Вопрос {current + 1} из {total}
+            Вопрос {current + 1} из {TOTAL_QUESTIONS}
           </span>
           <span>{Math.round(progress)}%</span>
         </div>
@@ -107,12 +151,12 @@ function QuizPage() {
           <h2 className="text-xl font-semibold leading-snug">{question.text}</h2>
           <div className="space-y-3">
             {question.options.map((opt) => {
-              const selected = answers[current] === opt.key;
+              const selected = selectedKey === opt.key;
               return (
                 <button
                   key={opt.key}
                   type="button"
-                  onClick={() => selectOption(opt.key)}
+                  onClick={() => selectOption(opt)}
                   disabled={isSaving}
                   className={`w-full text-left rounded-xl border p-4 transition-all hover:border-primary hover:bg-primary/5 active:scale-[0.99] ${
                     selected ? "border-primary bg-primary/10" : "border-border bg-card"
@@ -127,7 +171,7 @@ function QuizPage() {
       </Card>
 
       <div className="flex justify-between">
-        <Button variant="ghost" onClick={goBack} disabled={current === 0}>
+        <Button variant="ghost" onClick={goBack} disabled={current === 0 || isSaving}>
           Назад
         </Button>
         <span className="text-xs text-muted-foreground self-center">
